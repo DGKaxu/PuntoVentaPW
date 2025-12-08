@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content%}
+<div>
+    <div id="EliminarPersonalModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title text-dark">Eliminar</h5>
+                </div>
+                <div class="modal-body bg-dark text-white">
+                    <p class="labelmodal">¿Estás seguro?</p>
+                    <form method="POST" action="{% url 'DeleteVenta' %}">{% csrf_token %}
+                        <input type="hidden" id="id_producto_eliminar" name="id_producto_eliminar">
+                </div>
+                <div class="modal-footer bg-dark text-white">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        Volver
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        Aceptar
+                    </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div calss="row">
+        <div class="col-md-12"></div>
+        <h3 class="text-center"> Ventas <i class="fas fa-hand-holding-usd"></i></i></h3>
+        <div class="col-md-3 pb-2">
+            <a href="{% url 'AddVenta' %}">
+                <button type="button" class="btn btn-success">
+                    Agregar Ventas
+                    <i class="fas fa-plus-circle"></i>
+                </button>
+            </a>
+        </div>
+        </h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+    </div>
+    <div class="card card-body" style="overflow:scroll">
+        <table class="table table-hover table-primary" id="myTable">
+            <thead>
+                <tr>
+                    <th># ID</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Total $</th>
+                    <th>¿Pagado?</th>
+                    <th>Comentarios</th>
+                    <th>Opciones</th>
+                </tr>
+            </thead>
+            <tbody class="text-dark">
+                {% for i in ventas %}
+                <tr>
+                    <td>{{i.id}}</td>
+                    <td>{{i.fecha_pedido}}</td>
+                    <td>{{i.cliente}}</td>
+                    <td>{{i.total}}</td>
+                    <td>{{i.pagado}}</td>
+                    <td>{{i.comentarios}}</td>
+                    <td>
+                        <button onclick="eliminarProducto('{{i.id}}')" class="btn btn-dark-outline btn-sm"
+                            data-toggle="modal" href="#EliminarPersonalModal"><img
+                                src="{% static 'index/img/delete.png' %}" alt="Error" width="30"></button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+</div>
+{% endblock %}
