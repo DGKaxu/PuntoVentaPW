@@ -1,28 +1,21 @@
 import json
-import os
 from datetime import date, datetime
 from decimal import Decimal
 
 #Django Core
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db import transaction, IntegrityError
 from django.db.models import Sum, Count
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.template.loader import get_template
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
 #Modelos y Formularios
 from .forms import AddClienteForm, AddProductoForm, EditarClienteForm, EditarProductoForm
 from .models import Cliente, Egreso, Producto, ProductosEgreso
-
-#Librerias Externas
-from weasyprint import HTML, CSS
-from weasyprint.text.fonts import FontConfiguration
 
 # Funcion para verificar si es Admin
 def es_administrador(user):
@@ -259,18 +252,19 @@ def delete_venta_view(request):
     return redirect('Ventas')   
 
 def export_pdf_view(request, id, iva):
-    template = get_template("ticket.html")
-    subtotal = 0 
-    iva_suma = 0 
-
+    # 1. Recuperamos los datos (Igual que antes)
     venta = Egreso.objects.get(pk=int(id))
     datos = ProductosEgreso.objects.filter(egreso=venta)
+    
+    subtotal = 0 
+    iva_suma = 0 
     for i in datos:
-        subtotal = subtotal + float(i.subtotal)
-        iva_suma = iva_suma + float(i.iva)
+        subtotal += float(i.subtotal)
+        iva_suma += float(i.iva)
 
     empresa = "Mi empresa S.A. De C.V"
-    context ={
+    
+    context = {
         'num_ticket': id,
         'iva': iva,
         'fecha': venta.fecha_pedido,
@@ -282,15 +276,9 @@ def export_pdf_view(request, id, iva):
         'subtotal': subtotal,
         'iva_suma': iva_suma,
     }
-    html_template = template.render(context)
-    response = HttpResponse(content_type="application/pdf")
-    response["Content-Disposition"] = "inline; ticket.pdf"
-    css_url = os.path.join(settings.BASE_DIR, 'ventas', 'static', 'index', 'css', 'bootstrap.min.css')
-   
-    font_config = FontConfiguration()
-    HTML(string=html_template, base_url=request.build_absolute_uri()).write_pdf(target=response, font_config=font_config,stylesheets=[CSS(css_url)])
 
-    return response
+    # 2. EN LUGAR DE GENERAR PDF, SOLO MOSTRAMOS EL HTML
+    return render(request, 'ticket.html', context)
 
 @login_required(login_url='login')
 @user_passes_test(es_administrador, login_url='Ventas')

@@ -29,7 +29,7 @@
                             <td>{{i.descripcion}}</td>
                             <td>$ {{i.precio}}</td>
                             <td>
-                                <button onclick="addProductList('{{i.id}}', '{{i.descripcion}}','{{i.precio}}')"
+                                <button onclick="addProductList('{{i.id}}', '{{i.descripcion|escapejs}}','{{i.precio}}')"
                                     class="btn btn-success" data-dismiss="modal" type="button">
                                     <i class="fas fa-share-square"></i>
                                 </button>
@@ -206,8 +206,6 @@
     </div>
 </div>
 <div class="row mt-5">
-    <link rel="stylesheet" href="{% static 'index/css/b4.css' %}">
-    <script src="{% static 'index/js/b4.js' %}"></script>
     <div class="col-md-12" style="overflow:scroll">
         <table class="table table-secondary" id="tableProducts">
             <thead>
@@ -317,7 +315,6 @@
                 },
                 "lengthMenu": [[10, 25, 50], [10, 25, 50]],
                 rowCallback(row, data, displayNum, displayIndex, dataIndex) {
-                    //console.log(data);
 
                 },
             });
@@ -425,17 +422,15 @@
             },
             dataType: 'json',
         }).done(function (data) {
-            // AGREGAR ESTO: Si Python devuelve un error, muéstralo
             if (data.error) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Error del servidor',
                     text: data.error,
                 });
-                return; // Detiene la ejecución para que no intente abrir el PDF
+                return;
             }
 
-            // Flujo normal de éxito
             if (data[1] == true) {
                 window.open("{% url 'ExportPDF' 0 0 %}".replace('0/0', data[0] + '/' + data[2]), '_blank');
                 location.reload();
@@ -473,12 +468,8 @@
             let cant = parseInt($(this).val());
             if (isNaN(cant)) {
                 cant = 0;
-                //$(this).val(cant);
             }
             var tr = tableProducts.cell($(this).closest('td, li')).index();
-            //console.log(tr);
-            //var data = tableProducts.row(tr.row).data();
-            //console.log(data);
             verts.items.products[tr.row].cantidad = cant;
             verts.items.products[tr.row].subtotal = parseFloat(verts.items.products[tr.row].precio) * parseFloat(cant);
             verts.calculate();
@@ -490,18 +481,13 @@
             let precioE = parseFloat($(this).val());
             if (isNaN(precioE)) {
                 precioE = 0;
-                //$(this).val(cant);
             }
             var tr = tableProducts.cell($(this).closest('td, li')).index();
-            //console.log(tr);
-            //var data = tableProducts.row(tr.row).data();
-            //console.log(data);
             verts.items.products[tr.row].precio = precioE;
             verts.items.products[tr.row].subtotal = parseFloat(verts.items.products[tr.row].cantidad) * parseFloat(precioE);
             verts.calculate();
             verts.list();
         })
-    // Agregar desde lista 
     function addProductList(id_producto, descripcion_producto, precio_producto) {
         producto = {
             id: id_producto,
@@ -514,6 +500,35 @@
         verts.list();
         verts.calculate();
     };
+
+    function seleccionarCliente(id, nombre) {
+        document.getElementById("id_cliente").value = id;
+        document.getElementById("cliente").value = nombre;
+    }
+
+    function borrarContent() {
+        document.getElementById("search").value = "";
+    }
+    
+    if (typeof activarEspera !== 'function') {
+        function activarEspera() {
+            var btn = document.getElementById("btn");
+            if(btn) {
+                btn.disabled = true;
+                btn.innerHTML = 'Procesando... <i class="fas fa-spinner fa-spin"></i>';
+            }
+        }
+    }
+    
+    if (typeof desactivarEspera !== 'function') {
+        function desactivarEspera() {
+             var btn = document.getElementById("btn");
+            if(btn) {
+                btn.disabled = false;
+                btn.innerHTML = 'Agregar Venta <i class="fas fa-money-bill"></i>';
+            }
+        }
+    }
 </script>
 
 {% if messages %}

@@ -5,9 +5,6 @@
 
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'index/css/b4.css' %}">
-<script src="{% static 'index/js/b4.js' %}"></script>
-
 
 <div id="AgregarPersonalModal" class="modal" style="overflow: scroll;">
     <div class="modal-dialog">
@@ -102,12 +99,9 @@
     <div class="col-md-12">
         <h3 class="text-center">Clientes <i class="fas fa-users"></i></h3>
         <div class="col-md-3 pb-2">
-            <a href="#AgregarPersonalModal" data-toggle="modal" data-dismiss="modal">
-                <button type="button" class="btn btn-success">
-                    Agregar Cliente
-                    <i class="fas fa-plus-circle"></i>
-                </button>
-            </a>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AgregarPersonalModal">
+                Agregar Cliente <i class="fas fa-plus-circle"></i>
+            </button>
         </div>
         <div class="card card-body" style="overflow:scroll">
             <table class="table table-hover table-primary" id="myTable">
@@ -144,23 +138,23 @@
     </div>
 </div>
 {% if messages %}
-    {% for message in messages %}
-    <script>
-        var etiqueta = "{{ message.tags }}";        
-      
-        var titulo = "Notificación";
-        if (etiqueta == 'success') {
-            titulo = "¡Éxito!";
-        } else if (etiqueta == 'error') {
-            titulo = "Error";
-        }
+{% for message in messages %}
+<script>
+    var etiqueta = "{{ message.tags }}";
 
-        Swal.fire({
-            icon: etiqueta, 
-            title: titulo, 
-            text: "{{ message }}",
-        });
-    </script>
-    {% endfor %}
+    var titulo = "Notificación";
+    if (etiqueta == 'success') {
+        titulo = "¡Éxito!";
+    } else if (etiqueta == 'error') {
+        titulo = "Error";
+    }
+
+    Swal.fire({
+        icon: etiqueta,
+        title: titulo,
+        text: "{{ message }}",
+    });
+</script>
+{% endfor %}
 {% endif %}
 {% endblock %}
