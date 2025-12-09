@@ -24,7 +24,7 @@ from .models import Cliente, Egreso, Producto, ProductosEgreso
 from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
 
-# Función para verificar si es Admin
+# Funcion para verificar si es Admin
 def es_administrador(user):
     return user.groups.filter(name='Administrador').exists() or user.is_superuser
 
@@ -65,6 +65,8 @@ def add_cliente_view(request):
                 return redirect('Clientes')
     return redirect('Clientes')
 
+@login_required(login_url='login')
+@user_passes_test(es_administrador, login_url='Clientes')
 def edit_cliente_view(request):
     if request.POST:
         cliente = Cliente.objects.get(pk=request.POST.get('id_personal_editar'))
@@ -112,6 +114,8 @@ def add_producto_view(request):
                 return redirect('Productos')
     return redirect('Productos')
 
+@login_required(login_url='login')
+@user_passes_test(es_administrador, login_url='Productos')
 def edit_producto_view(request):
     if request.POST: 
         producto = Producto.objects.get(pk=request.POST.get('id_producto_editar'))
