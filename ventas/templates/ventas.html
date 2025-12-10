@@ -1,83 +1,97 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content%}
+
 <div>
     <div id="EliminarPersonalModal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-info">
-                    <h5 class="modal-title text-dark">Eliminar</h5>
+                    <h5 class="modal-title text-dark">Eliminar Venta</h5>
                 </div>
-                <div class="modal-body bg-dark text-white">
-                    <p class="labelmodal">¿Estás seguro?</p>
-                    <form method="POST" action="{% url 'DeleteVenta' %}">{% csrf_token %}
+                <form method="POST" action="{% url 'DeleteVenta' %}">{% csrf_token %}
+                    <div class="modal-body bg-dark text-white">
+                        <p class="labelmodal">¿Estás seguro de eliminar este registro de venta?</p>
                         <input type="hidden" id="id_producto_eliminar" name="id_producto_eliminar">
-                </div>
-                <div class="modal-footer bg-dark text-white">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">
-                        Volver
-                    </button>
-                    <button type="submit" class="btn btn-success">
-                        Aceptar
-                    </button>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer bg-dark text-white">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Volver</button>
+                        <button type="submit" class="btn btn-success">Aceptar</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <div calss="row">
-        <div class="col-md-12"></div>
-        <h3 class="text-center"> Ventas <i class="fas fa-hand-holding-usd"></i></i></h3>
-        <div class="col-md-3 pb-2">
-            <a href="{% url 'AddVenta' %}">
-                <button type="button" class="btn btn-success">
-                    Agregar Ventas
-                    <i class="fas fa-plus-circle"></i>
-                </button>
-            </a>
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="text-center mt-3"> Ventas Realizadas <i class="fas fa-hand-holding-usd"></i></h3>
+            <div class="col-md-3 pb-2">
+                <a href="{% url 'AddVenta' %}" class="btn btn-success">
+                    Agregar Venta <i class="fas fa-plus-circle"></i>
+                </a>
+            </div>
         </div>
-        </h3>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-body" style="overflow:scroll; border:none; box-shadow:none;">
+                <table class="table tabla-redondeada">
+                    <thead>
+                        <tr>
+                            <th># Folio</th>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Total</th>
+                            <th>Pagado</th>
+                            <th>Comentarios</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-dark">
+                        {% for i in ventas %}
+                        <tr>
+                            <td>{{i.id}}</td>
+                            <td>{{i.fecha_pedido}}</td>
+                            <td>{{i.cliente}}</td>
+                            <td class="font-weight-bold">${{i.total}}</td>
+                            <td>${{i.pagado}}</td>
+                            <td>{{i.comentarios}}</td>
+                            <td>
+                                <button onclick="eliminarProducto('{{i.id}}')" class="btn btn-danger btn-sm"
+                                    data-toggle="modal" href="#EliminarPersonalModal">
+                                    <img src="{% static 'index/img/delete.png' %}" alt="Borrar" width="20">
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="7" class="text-center">No hay ventas registradas.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if ventas.has_other_pages %}
+            <nav aria-label="Navegación">
+                <ul class="pagination justify-content-center mt-2">
+                    {% if ventas.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page={{ ventas.previous_page_number }}">Anterior</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+                    {% endif %}
+                    
+                    <li class="page-item active"><span class="page-link">Pág {{ ventas.number }} de {{ ventas.paginator.num_pages }}</span></li>
+                    
+                    {% if ventas.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ ventas.next_page_number }}">Siguiente</a></li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
     </div>
-    <div class="card card-body" style="overflow:scroll">
-        <table class="table table-hover table-primary" id="myTable">
-            <thead>
-                <tr>
-                    <th># ID</th>
-                    <th>Fecha</th>
-                    <th>Cliente</th>
-                    <th>Total $</th>
-                    <th>Pagado $</th>
-                    <th>Comentarios</th>
-                    <th>Opciones</th>
-                </tr>
-            </thead>
-            <tbody class="text-dark">
-                {% for i in ventas %}
-                <tr>
-                    <td>{{i.id}}</td>
-                    <td>{{i.fecha_pedido}}</td>
-                    <td>{{i.cliente}}</td>
-                    <td>{{i.total}}</td>
-                    <td>{{i.pagado}}</td>
-                    <td>{{i.comentarios}}</td>
-                    <td>
-                        <button onclick="eliminarProducto('{{i.id}}')" class="btn btn-dark-outline btn-sm"
-                            data-toggle="modal" href="#EliminarPersonalModal"><img
-                                src="{% static 'index/img/delete.png' %}" alt="Error" width="30"></button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-</div>
-
 </div>
 {% endblock %}

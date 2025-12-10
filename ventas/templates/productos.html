@@ -1,38 +1,26 @@
 {% extends "base.html" %}
-
 {% load static %}
 {% load widget_tweaks %}
 
 {% block content %}
 
-
 <div id="AgregarProductoModal" class="modal" style="overflow: scroll;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-info">
-                <h5 class="modal-title text-dark">Agregar nuevo</h5>
+                <h5 class="modal-title text-dark">Agregar Nuevo Producto</h5>
             </div>
-            <div class="modal-body bg-dark text-white">
-                <form method="POST" action="{% url 'AddProducto' %}" enctype="multipart/form-data">{% csrf_token %}
+            <form method="POST" action="{% url 'AddProducto' %}" enctype="multipart/form-data">{% csrf_token %}
+                <div class="modal-body bg-dark text-white">
                     {% for field in form_add %}
-                    <p>{{field.label}} <br>
-                        {{field|add_class:"form-control text-dark"}}</p>
-                    {% for error in field.errors %}
-                    <p class="alarma">{{error}}</p>
+                    <p>{{field.label}} <br> {{field|add_class:"form-control text-dark"}}</p>
+                    {% for error in field.errors %} <p class="alarma">{{error}}</p> {% endfor %}
                     {% endfor %}
-                    {% endfor %}
-                    {% for error in form.non_field_errors %}
-                    <p class="alarma">{{error}}</p>
-                    {% endfor %}
-            </div>
-            <div class="modal-footer bg-dark">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">
-                    Cancelar
-                </button>
-                <button type="submit" class="btn btn-success">
-                    Agregar
-                </button>
-            </div>
+                </div>
+                <div class="modal-footer bg-dark">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Agregar</button>
+                </div>
             </form>
         </div>
     </div>
@@ -42,31 +30,21 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-info">
-                <h5 class="modal-title text-dark">Editar</h5>
+                <h5 class="modal-title text-dark">Editar Producto</h5>
             </div>
-            <div class="modal-body bg-dark text-white">
-                <form method="POST" action="{% url 'EditProduct' %}" enctype="multipart/form-data">{% csrf_token %}
+            <form method="POST" action="{% url 'EditProduct' %}" enctype="multipart/form-data">{% csrf_token %}
+                <div class="modal-body bg-dark text-white">
                     <input type="hidden" id="id_producto_editar" name="id_producto_editar">
                     {% for field in form_editar %}
-                    <p> {{field.label}} <br>
-                        {{field|add_class:"form-control"}}</p>
-                    {% for error in field.errors %}
-                    <p class="alarma">{{error}}</p>
+                    <p> {{field.label}} <br> {{field|add_class:"form-control"}}</p>
+                    {% for error in field.errors %} <p class="alarma">{{error}}</p> {% endfor %}
                     {% endfor %}
-                    {% endfor %}
-                    {% for error in form.non_field_errors %}
-                    <p class="alarma">{{error}}</p>
-                    {% endfor %}
-            </div>
-            <div class="modal-footer bg-dark text-white">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">
-                   Volver
-                </button>
-                <button type="submit" class="btn btn-success">
-                    Aceptar
-                </button>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer bg-dark text-white">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Volver</button>
+                    <button type="submit" class="btn btn-success">Aceptar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -75,44 +53,38 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-info">
-                <h5 class="modal-title text-dark">Eliminar</h5>
+                <h5 class="modal-title text-dark">Eliminar Producto</h5>
             </div>
-            <div class="modal-body bg-dark text-white">
-                <p class="labelmodal">¿Estás seguro?</p>
-                <form method="POST" action="{% url 'DeleteProduct' %}">{% csrf_token %}
+            <form method="POST" action="{% url 'DeleteProduct' %}">{% csrf_token %}
+                <div class="modal-body bg-dark text-white">
+                    <p class="labelmodal">¿Estás seguro de eliminar este producto?</p>
                     <input type="hidden" id="id_producto_eliminar" name="id_producto_eliminar">
-            </div>
-            <div class="modal-footer bg-dark text-white">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">
-                   Volver
-                </button>
-                <button type="submit" class="btn btn-success">
-                    Aceptar
-                </button>
-                </form>
-            </div>
+                </div>
+                <div class="modal-footer bg-dark text-white">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Volver</button>
+                    <button type="submit" class="btn btn-success">Aceptar</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <div class="row">
     <div class="col-md-12">
-        <h3 class="text-center">Productos   <i class="fas fa-boxes"></i></h3>
+        <h3 class="text-center mt-3">Productos <i class="fas fa-boxes"></i></h3>
+        
         <div class="col-md-3 pb-2">
-            <a href="#AgregarProductoModal"
-                data-toggle="modal" data-dismiss="modal">
-                <button type="button" class="btn btn-success">
-                    Agregar Producto
-                    <i class="fas fa-plus-circle"></i>
-                </button>
-            </a>
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#AgregarProductoModal">
+                Agregar Producto <i class="fas fa-plus-circle"></i>
+            </button>
         </div>
-        <div class="card card-body" style="overflow:scroll">
-            <table class="table table-hover table-primary" id="myTable">
+
+        <div class="card card-body" style="overflow:scroll; border:none; box-shadow:none;">
+            <table class="table tabla-redondeada">
                 <thead>
                     <tr>
                         <th># ID</th>
-                        <th>Descripcion</th>
+                        <th>Descripción</th>
                         <th>Costo</th>
                         <th>Precio</th>
                         <th>Cantidad</th>
@@ -125,47 +97,53 @@
                     <tr>
                         <td>{{i.id}}</td>
                         <td>{{i.descripcion}}</td>
-                        <td>{{i.costo}}</td>
-                        <td>{{i.precio}}</td>
-                        <td>{{i.cantidad}}</td>
-                        {% if i.imagen %}
-                            <td><img src="{{i.imagen.url}}" alt="Error" width="100" height="100"></td>
-                            {% else %}
-                            <td></td>
-                        {% endif %}
+                        <td>${{i.costo}}</td>
+                        <td>${{i.precio}}</td>
+                        <td class="{% if i.cantidad <= 5 %}text-danger font-weight-bold{% endif %}">{{i.cantidad}}</td>
                         <td>
-                              <button onclick="editarProducto('{{i.id}}', '{{i.codigo}}', '{{i.descripcion}}', '{{i.costo}}','{{i.precio}}','{{i.cantidad}}')" class="btn btn-dark-outline btn-sm" data-toggle="modal"
-                                href="#EditarPersonalModal"><img src="{% static 'index/img/editar.png' %}" alt="Error"
-                                    width="30"></button>
-                            <button onclick="eliminarProducto('{{i.id}}')" class="btn btn-dark-outline btn-sm"
-                                data-toggle="modal" href="#EliminarPersonalModal"><img
-                                    src="{% static 'index/img/delete.png' %}" alt="Error" width="30"></button>
+                            {% if i.imagen %}
+                                <img src="{{i.imagen.url}}" alt="Img" width="40" height="40" style="border-radius:5px;">
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button onclick="editarProducto('{{i.id}}', '{{i.codigo}}', '{{i.descripcion}}', '{{i.costo}}','{{i.precio}}','{{i.cantidad}}')" 
+                                class="btn btn-warning btn-sm" data-toggle="modal" href="#EditarPersonalModal">
+                                <img src="{% static 'index/img/editar.png' %}" alt="Edit" width="20">
+                            </button>
+                            <button onclick="eliminarProducto('{{i.id}}')" class="btn btn-danger btn-sm"
+                                data-toggle="modal" href="#EliminarPersonalModal">
+                                <img src="{% static 'index/img/delete.png' %}" alt="Del" width="20">
+                            </button>
                         </td>
                     </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="text-center">No hay productos.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+
+        {% if productos.has_other_pages %}
+        <nav aria-label="Navegación">
+            <ul class="pagination justify-content-center mt-2">
+                {% if productos.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ productos.previous_page_number }}">Anterior</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+                {% endif %}
+                
+                <li class="page-item active"><span class="page-link">Pág {{ productos.number }} de {{ productos.paginator.num_pages }}</span></li>
+                
+                {% if productos.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ productos.next_page_number }}">Siguiente</a></li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
     </div>
 </div>
-{% if messages %}
-    {% for message in messages %}
-    <script>
-        var etiqueta = "{{ message.tags }}"; 
-        
-        var titulo = "Notificación";
-        if (etiqueta == 'success') {
-            titulo = "¡Éxito!";
-        } else if (etiqueta == 'error') {
-            titulo = "Error";
-        }
-
-        Swal.fire({
-            icon: etiqueta, 
-            title: titulo,  
-            text: "{{ message }}",
-        });
-    </script>
-    {% endfor %}
-{% endif %}
 {% endblock %}

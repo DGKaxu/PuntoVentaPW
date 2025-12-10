@@ -12,6 +12,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
+from django.core.paginator import Paginator
 
 #Modelos y Formularios
 from .forms import AddClienteForm, AddProductoForm, EditarClienteForm, EditarProductoForm
@@ -32,19 +33,23 @@ def ventas_view(request):
     return render(request,'ventas.html', context)
 
 def clientes_view(request):
-    clientes = Cliente.objects.all()
+    lista_clientes = Cliente.objects.all().order_by('id')
+    
+    paginator = Paginator(lista_clientes, 10) 
+    numero_pagina = request.GET.get('page')
+    page_obj = paginator.get_page(numero_pagina)
+
     form_personal = AddClienteForm()
     form_editar = EditarClienteForm()
 
     context = {
-        'clientes': clientes,
+        'clientes': page_obj,
         'form_personal': form_personal,
         'form_editar': form_editar
     }
     return render(request,'clientes.html', context)
 
 def add_cliente_view(request):
-    #print("Guardar cliente")
     if request.POST:
         form = AddClienteForm(request.POST, request.FILES)
         if form.is_valid():
@@ -82,16 +87,21 @@ def delete_cliente_view(request):
     return redirect('Clientes')    
 
 def productos_view(request):
-    productos = Producto.objects.all()
+    lista_completa = Producto.objects.all().order_by('id') 
+
+    paginator = Paginator(lista_completa, 10) 
+    numero_pagina = request.GET.get('page')
+    page_obj = paginator.get_page(numero_pagina)
+
     form_add = AddProductoForm()
     form_editar = EditarProductoForm()
+    
     context = {
-            "productos" : productos,
-            'form_add' : form_add,
-            'form_editar': form_editar
-
+        "productos": page_obj, 
+        'form_add': form_add,
+        'form_editar': form_editar
     }
-    return render(request,'productos.html', context)
+    return render(request, 'productos.html', context)
 
 def add_producto_view(request):
     if request.POST:

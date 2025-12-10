@@ -14,16 +14,70 @@
   <link rel="stylesheet"
     href="{% static 'lib/adminlite/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
 
-  <link rel="stylesheet" href="{% static 'lib/adminlite/plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'index/DataTables/datatables.min.css' %}">
-  <link rel="stylesheet" type="text/css"
-    href="{% static 'index/DataTables/Buttons-2.0.1/css/buttons.dataTables.min.css' %}">
   <link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css' %}">
 
   <link rel="stylesheet" href="{% static 'index/css/main.css' %}">
 
   <script type="text/javascript" charset="utf8" src="{% static 'index/js/jquery.js' %}"></script>
   <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
+
+  <style>
+    .tabla-redondeada {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      border: 1px solid #ddd;
+    }
+
+    .tabla-redondeada thead th {
+      background-color: #6f42c1;
+      color: white;
+      border: none;
+      padding: 15px;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .tabla-redondeada tbody tr:nth-of-type(odd) {
+      background-color: #f8f9fa;
+    }
+
+    .tabla-redondeada tbody tr:hover {
+      background-color: #e2e6ea;
+      transition: background-color 0.2s;
+    }
+
+    .tabla-redondeada td {
+      padding: 12px 15px;
+      vertical-align: middle;
+      border-bottom: 1px solid #eee;
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1; 
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #888; 
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555; 
+    }
+
+    * {
+        scrollbar-width: thin; 
+        scrollbar-color: #888 #f1f1f1; 
+    }
+  </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed sidebar-closed sidebar-collapse">
@@ -83,8 +137,6 @@
                 <p>Clientes</p>
               </a>
             </li>
-
-            <li class="nav-header">EMPRESA</li>
             <li class="nav-item bg-danger mt-3">
               <a href="{% url 'logout' %}" class="nav-link bg-danger border-0 text-left">
                 <i class="nav-icon fas fa-sign-out-alt"></i>
@@ -118,24 +170,14 @@
   </div>
   <script src="{% static 'lib/adminlite/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
   <script src="{% static 'lib/adminlite/js/adminlte.js' %}"></script>
-  <script src=" {% static 'lib/adminlite/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
-
-  <script src="{% static 'index/DataTables/datatables.min.js' %}"></script>
-  <script src="{% static 'index/DataTables/Buttons-2.0.1/js/dataTables.buttons.min.js' %}"></script>
-  <script src="{% static 'index/DataTables/Buttons-2.0.1/js/buttons.print.min.js' %}"></script>
-  <script src="{% static 'index/DataTables/Buttons-2.0.1/js/buttons.html5.min.js' %}"></script>
-  <script src="{% static 'index/DataTables/Buttons-2.0.1/js/pdfmaker.min.js' %}"></script>
-
   <script type="text/javascript" charset="utf8" src="{% static 'index/js/main.js' %}"></script>
 
   <script>
     {% if user.is_authenticated %}
-    // Verificamos si esta pestaña tiene permiso para estar abierta
     if (!sessionStorage.getItem('sesion_activa')) {
       window.location.href = "{% url 'logout' %}";
     }
     {% else %}
-    // Limpiamos al salir
     sessionStorage.removeItem('sesion_activa');
     {% endif %}
   </script>
