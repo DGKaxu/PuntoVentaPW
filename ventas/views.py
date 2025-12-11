@@ -2,19 +2,19 @@ import json
 from datetime import date, datetime
 from decimal import Decimal
 
-#Django Core
+# Django Core
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.core.paginator import Paginator
 from django.db import transaction, IntegrityError
-from django.db.models import Sum, Count
+from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
-from django.core.paginator import Paginator
 
-#Modelos y Formularios
+# Tus Modelos y Formularios
 from .forms import AddClienteForm, AddProductoForm, EditarClienteForm, EditarProductoForm
 from .models import Cliente, Egreso, Producto, ProductosEgreso
 
@@ -24,11 +24,14 @@ def es_administrador(user):
 
 @login_required(login_url='login')
 def ventas_view(request):
-    ventas = Egreso.objects.all()
-    num_ventas = len(ventas)
+    lista_ventas = Egreso.objects.all().order_by('-id') 
+
+    paginator = Paginator(lista_ventas, 10) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context = {
-        'ventas': ventas,
-        'num_ventas': num_ventas
+        'ventas': page_obj,
+        'num_ventas': len(lista_ventas)
     }
     return render(request,'ventas.html', context)
 
