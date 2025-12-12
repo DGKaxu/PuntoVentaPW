@@ -171,6 +171,32 @@
   <script type="text/javascript" charset="utf8" src="{% static 'index/js/main.js' %}"></script>
 
   <script>
+    function editarPersonal(id, nombre, telefono, codigo) {
+        $('#id_personal_editar').val(id);
+        
+        $('input[name="nombre"]').val(nombre);
+        $('input[name="telefono"]').val(telefono);
+        $('input[name="codigo"]').val(codigo);
+    }
+
+    function eliminarPersonal(id) {
+        $('#id_personal_eliminar').val(id);
+    }
+
+    function editarProducto(id, codigo, descripcion, costo, precio, cantidad) {
+        $('#id_producto_editar').val(id);
+        
+        $('#EditarPersonalModal input[name="codigo"]').val(codigo);
+        $('#EditarPersonalModal input[name="descripcion"]').val(descripcion);
+        $('#EditarPersonalModal input[name="costo"]').val(costo);
+        $('#EditarPersonalModal input[name="precio"]').val(precio);
+        $('#EditarPersonalModal input[name="cantidad"]').val(cantidad);
+    }
+
+    function eliminarProducto(id) {
+        $('#id_producto_eliminar').val(id);
+    }
+    
     {% if user.is_authenticated %}
     if (!sessionStorage.getItem('sesion_activa')) {
       window.location.href = "{% url 'logout' %}";

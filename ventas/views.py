@@ -226,7 +226,7 @@ class add_ventas(ListView):
                         
                         iva = 0
                         if desglosar_iva:
-                            iva = subtotal * 0.16
+                            iva = subtotal * Decimal('0.16')
                         
                         total_producto = subtotal + iva
 
